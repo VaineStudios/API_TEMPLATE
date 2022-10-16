@@ -1,5 +1,5 @@
 const User = require("../../../schema/user.schema");
-const { JSONResponse } = require("../../../utilities/jsonResponse");
+const { JSONResponse } = require("../../../utilities/response.utility");
 const { ObjectId } = require("mongoose").Types;
 
 class UserController {
@@ -33,8 +33,10 @@ class UserController {
         try{
             let data = req.body;
             if(Object.keys(data).length == 0) throw new Error("No data passed to create user profile");
-            let user = await new User(data).save();
-            await user
+            let user = await new User(data)
+            let duplicate = await user.checkDupe();
+            if(duplicate) throw new Error("Duplicate Entry already found with this data");
+            await user.save();
             JSONResponse.success(res, "User profile successfully created", user, 201);
         }catch(error){
             JSONResponse.error(res, "Error creating user profile", error, 400);
@@ -54,7 +56,8 @@ class UserController {
             let data = req.body;
             let id = req.params.id;
             // not letting user update password at this route;
-            if(data.password) data.password == undefined;
+            if(data.password) data.password = undefined;
+            console.log(data);
             if(!ObjectId.isValid(id)) throw new Error("Invalid ID was passed as a parameter");
             if(Object.keys(data).length == 0) {
                 return JSONResponse.success(res, "No data passed, file not updated",{}, 200);
@@ -109,6 +112,22 @@ class UserController {
          JSONResponse.error(res, "Unable to find user", error, 404);
       }
    };
+
+   static requestPasswordReset = async (req, res, next) => {
+    try{
+        let {email, redirectLink} = req.body;
+        let users = await User.find({email: email});
+        if(users.length === 0) throw new Error("No user exists with that email");
+        let user = users[0];
+        await user.requestPasswordReset(user, redirectLink);
+        JSONResponse.success(res, "Successfully sent password reset request", {},200);
+    }catch(error){
+        JSONResponse.error(res, "Unable to reset password", error,404)
+    }
+   }
+   static resetPassword = async(req, res, next)=>{
+    
+   }
 
 }
 
