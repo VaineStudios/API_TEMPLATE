@@ -5,6 +5,10 @@ router
     .route("/")
         .get(UserController.getAllUsers)
         .post(UserController.createUserProfile)
+
+
+router.route("/resetPassword")
+    .post(UserController)
     
 router
     .route("/:id")
