@@ -5,13 +5,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 4000;
 const connectDatabase = require("./connections/db");
-const API_V1 = require("./api/v1/api.js");
+const API_V1 = require("./api/v1/api.routes");
 const {WHITELIST} = process.env;
 const whiteList = JSON.parse(WHITELIST);
 const CORS_OPTION = {
     origin : function (origin, callback) {
-        console.log(callback);
-        if(whiteList.indexOf(origin) !== -1){
+        if((whiteList.indexOf(origin) !== -1) || whiteList.indexOf("*") !== -1){
             callback(null, true);
         }else{
             callback(new Error("Cors Disabled access to this endpoint")); 
