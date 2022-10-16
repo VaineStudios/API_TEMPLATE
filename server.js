@@ -28,7 +28,7 @@ connectDatabase();
 
 
 // Routers
-server.use("/api/v1", API_V1)
+server.use("/api/v1", API_V1);
 
 
 
