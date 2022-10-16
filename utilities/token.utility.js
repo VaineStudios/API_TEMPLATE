@@ -15,13 +15,14 @@ class JWTHelper{
         return jwt.sign(data,process.env.JWT_SECRET_KEY, {expiresIn: expireIn})
     }
     static setToken(req, res, payload, name, expire = '3600s') {
-		const token = this.genToken(payload, expire)
+		const token = this.genToken(payload, expire);
+        console.log((process.env.NODE_ENV === 'production'))
 		res.cookie(name, token, {
 			expiresIn: expire,
 			httpOnly: true,
 			secure: (process.env.NODE_ENV === 'production'), // sets secure to true if the NODE_ENV variable is present
-			signed: true,
-			sameSite: 'none',
+			signed: (process.env.NODE_ENV === 'production'),
+			sameSite: 'none'
 		})
 	}
 	static getToken(req, res, name) {
@@ -52,4 +53,4 @@ class JWTHelper{
 }
 
 
-module.exports = JWTHelper();
+module.exports = JWTHelper;
