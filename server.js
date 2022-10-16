@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require('express');
 const server = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 4000;
 const connectDatabase = require("./connections/db");
 const API_V1 = require("./api/v1/api.js");
@@ -19,7 +20,7 @@ const CORS_OPTION = {
     optionsSuccessStatus: 200
 }
 
-
+server.use(cookieParser()); // uses cookie to store tokens
 server.use(express.json()); //allow us to read the request body
 server.use(express.urlencoded({extended:true})); /// allow for query strings to be encoded with library tthat parses nested objects.
 server.use(cors(CORS_OPTION)); //setting cors with option;
