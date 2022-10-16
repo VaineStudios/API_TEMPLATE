@@ -16,7 +16,6 @@ class JWTHelper{
     }
     static setToken(req, res, payload, name, expire = '3600s') {
 		const token = this.genToken(payload, expire);
-        console.log((process.env.NODE_ENV === 'production'))
 		res.cookie(name, token, {
 			expiresIn: expire,
 			httpOnly: true,
