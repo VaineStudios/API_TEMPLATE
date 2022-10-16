@@ -4,6 +4,7 @@ const server = express();
 const cors = require('cors');
 const PORT = process.env.PORT || 4000;
 const connectDatabase = require("./connections/db");
+const API_V1 = require("./api/v1/api.js");
 const {WHITELIST} = process.env;
 const whiteList = JSON.parse(WHITELIST);
 const CORS_OPTION = {
@@ -17,13 +18,16 @@ const CORS_OPTION = {
     },
     optionsSuccessStatus: 200
 }
+
+
 server.use(express.json()); //allow us to read the request body
-server.use(express.urlencoded({extended:true})); // allow for query strings
-server.use(cors(CORS_OPTION)); //
+server.use(express.urlencoded({extended:true})); /// allow for query strings to be encoded with library tthat parses nested objects.
+server.use(cors(CORS_OPTION)); //setting cors with option;
 connectDatabase();
 
 
-
+// Routers
+server.use("/api/v1", API_V1)
 
 
 
