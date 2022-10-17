@@ -1,4 +1,4 @@
-const User = require("../../../schema/user.schema");
+const User = require("../../../schemas/user.schema");
 const { JSONResponse } = require("../../../utilities/response.utility");
 const { ObjectId } = require("mongoose").Types;
 
