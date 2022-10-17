@@ -7,9 +7,12 @@ router
         .post(UserController.createUserProfile)
 
 
+router.route("/requestPasswordReset")
+    .post(UserController.requestPasswordReset);
+
 router.route("/resetPassword")
-    .post(UserController)
-    
+    .post(UserController.resetPassword);
+
 router
     .route("/:id")
         .get(UserController.getUserProfile)
