@@ -16,8 +16,9 @@ router.route("/resetPassword")
 
 router
     .route("/:id")
-        .get(Middleware.isAuthenticated,Middleware.isUserOrSuperAdmin,UserController.getUserProfile)
-        .patch(Middleware.isAuthenticated,Middleware.isUserOrSuperAdmin,awsStorage.uploadFileToS3.single("image"),UserController.updateUserProfile)
-        .delete(Middleware.isAuthenticated,Middleware.isUserOrSuperAdmin,UserController.deleteUserProfile)
+        .all(Middleware.isAuthenticated, Middleware.isUserOrSuperAdmin)
+        .get(UserController.getUserProfile)
+        .patch(awsStorage.uploadFileToS3.single("image"),UserController.updateUserProfile)
+        .delete(UserController.deleteUserProfile)
     
 module.exports = router;
