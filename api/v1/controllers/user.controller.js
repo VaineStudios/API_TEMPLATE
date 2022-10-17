@@ -33,6 +33,7 @@ class UserController {
         try{
             let data = req.body;
             if(Object.keys(data).length == 0) throw new Error("No data passed to create user profile");
+            data.image = (req.file) ? req.file.location : undefined;
             let user = await new User(data)
             let duplicate = await user.checkDupe();
             if(duplicate) throw new Error("Duplicate Entry already found with this data");
@@ -57,7 +58,7 @@ class UserController {
             let id = req.params.id;
             // not letting user update password at this route;
             if(data.password) data.password = undefined;
-            console.log(data);
+            data.image = (req.file) ? req.file.location : undefined;
             if(!ObjectId.isValid(id)) throw new Error("Invalid ID was passed as a parameter");
             if(Object.keys(data).length == 0) {
                 return JSONResponse.success(res, "No data passed, file not updated",{}, 200);

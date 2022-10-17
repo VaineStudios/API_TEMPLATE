@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const UserController = require('../controllers/user.controller');
-
+const awsStorage = require("../../../utilities/s3.utility");
 router
     .route("/")
         .get(UserController.getAllUsers)
-        .post(UserController.createUserProfile)
+        .post(awsStorage.uploadFileToS3.single("image"),UserController.createUserProfile)
 
 
 router.route("/requestPasswordReset")
@@ -16,7 +16,7 @@ router.route("/resetPassword")
 router
     .route("/:id")
         .get(UserController.getUserProfile)
-        .patch(UserController.updateUserProfile)
+        .patch(awsStorage.uploadFileToS3.single("image"),UserController.updateUserProfile)
         .delete(UserController.deleteUserProfile)
     
 module.exports = router;
