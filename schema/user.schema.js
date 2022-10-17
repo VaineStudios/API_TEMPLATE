@@ -103,16 +103,17 @@ userSchema.methods.isCorrectPassword = async function(password){
 }
 
 
-userSchema.methods.requestPasswordReset = async function(user, redirectLink){
+userSchema.methods.requestPasswordReset = async function(redirectLink){
+    console.log(this);
     const data = {
-        user: user,
+        user: {first_name: this.first_name, last_name: this.last_name},
         redirectLink
     }
     try{
-        let html = htmlCompiler("password_reset",data);
-        await emailer.sendMail(user.email, "Password Reset","",html);
+        let html = htmlCompiler.compileHtml("password_reset",data);
+        await emailer.sendMail(this.email, "Password Reset",`Hello ${this.first_name} ${this.firstname}`,html);
     }catch(error){
-        Promise.reject(new Error(error));
+        return Promise.reject(new Error(error));
     }
 }
 
