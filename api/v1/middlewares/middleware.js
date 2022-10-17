@@ -1,7 +1,5 @@
-const { JSONResponse } = require("../utilities/jsonResponse");
-
+const { JSONResponse } = require("../../../utilities/response.utility");
 const JWT = require("jsonwebtoken");
-const JWTHelper = require("../../../utilities/token.utility");
 
 class Middleware{
 
@@ -14,9 +12,14 @@ class Middleware{
      */
     static isAuthenticated = async (req, res, next) => {
         try{
-            const decoded_token = JWTHelper.getToken(req, res,"Jwt-token");
-            if(decoded_token){
-                req.user = decoded_token;
+            const bearerHeader = req.headers['authorization'];
+            
+            if (bearerHeader) {
+                const bearer = bearerHeader.split(' ');
+                const bearerToken = bearer[1];
+                req.token = bearerToken;
+                let decodedToken = JWT.verify(bearerToken, process.env.JWT_SECRET_KEY);
+                req.user = decodedToken;
                 next();
             } else {
                 // Forbidden

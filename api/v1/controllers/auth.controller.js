@@ -13,13 +13,7 @@ class AuthController {
          let passCheck = await user.isCorrectPassword(password);
          if (!passCheck) throw new Error("Invalid password");
          let data = user;
-          JWTHelper.setToken(
-            req,
-            res,
-             { id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin},
-             "Jwt-token",
-             "3600"
-             );
+         let token = JWTHelper.genToken({ id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin},"3600");
              data.password = undefined;
             data.isSuperAdmin = undefined;
          JSONResponse.success(
@@ -27,7 +21,7 @@ class AuthController {
             "User is authenticated successfully",
             {
                 user, 
-                token: res.cookie
+                token
             },
 
             200

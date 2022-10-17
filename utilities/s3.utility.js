@@ -12,11 +12,9 @@ const {AWS_BUCKET_NAME, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_REGION} = pro
 
 class AWSStorage{
 
-    s3 = new AWS.S3({
-        accessKeyId:this._accessKeyId,
-        secretAccessKey:this._secretAccessKey
-    });
-
+    s3 = {}    
+    uploadFileToS3 = {};
+    
     /**
      * ### description
      * Uses the keys passed in as a parameter to the constructor to set up a secure storage in AWS S3 bucket
@@ -26,27 +24,40 @@ class AWSStorage{
      * @param {string} region 
      */
     constructor(accessKeyId = AWS_ACCESS_KEY, secretAccessKey=AWS_SECRET_KEY, bucketName = AWS_BUCKET_NAME, region = AWS_BUCKET_REGION){
+
+
         this._bucketName = bucketName;
         this._region = region;
         this._accessKeyId = accessKeyId;
-        this._secretAccessKey = secretAccessKey;   
+        this._secretAccessKey = secretAccessKey;
+        this.setUpAWS();
+        this.setUpMulter();
     }
 
+
+    setUpAWS = ()=>{
+        this.s3 = new AWS.S3({
+            accessKeyId:this._accessKeyId,
+            secretAccessKey:this._secretAccessKey
+        });
+    };
     
-    uploadFileToS3 = multer({
+    setUpMulter = ()=>{
+        this.uploadFileToS3 = multer({
         
-        storage: multerS3({
-            s3:this.s3,
-            bucket:this._bucketName,
-            metadata: (req, file, cb)=>{
-                cb(null, {fieldName: file.fieldname})
-            },
-            key:(req, file, cb)=>{
-                cb(null, Date.now().toString() + '-' + file.originalname);
-            }
-    
+            storage: multerS3({
+                s3:this.s3,
+                bucket:this._bucketName,
+                metadata: (req, file, cb)=>{
+                    cb(null, {fieldName: file.fieldname})
+                },
+                key:(req, file, cb)=>{
+                    cb(null, Date.now().toString() + '-' + file.originalname);
+                }
+        
+            })
         })
-    })
+    }
 
 
     /**
