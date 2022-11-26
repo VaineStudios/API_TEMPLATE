@@ -58,6 +58,18 @@ class AWSStorage{
             })
         })
     }
+    uploadToFolder = (foldername)=>{
+        return multerS3({
+            storage:this.s3,
+            bucket:this._bucketName,
+            metadata:(req, file, cb)=>{
+                cb(null, {fieldName:file.fieldname})
+            }, 
+            key:(req, file, cb)=>{
+                cb(null, foldername+"/"+Date.now().toString()+"-"+file.originalname);
+            }
+        })
+    }
 
 
     /**
