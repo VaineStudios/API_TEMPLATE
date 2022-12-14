@@ -86,22 +86,25 @@ class AWSStorage{
      */
     deleteObjectFromS3 = async (location)=>{
         if(!location) return Promise.reject(new Error("No location was specified"))
-        let objectName = location.split('/').slice(-1)[0];
-        
+        let objectName = location.split("/").slice(-2).join("/");
+        // location will be a enconded url so we decode it since we the key isn't encoded.
+        objectName = decodeURIComponent(objectName)
+
         const params = {
-            Bucket : bucketName,
+            Bucket : this._bucketName,
             Key: objectName,
         }
         try{
             // checks to see if there is any errors with the file metadata.
-            await s3.headObject(params).promise();
+            await this.s3.headObject(params).promise();
 
-            await s3.deleteObject(params).promise();
+            await this.s3.deleteObject(params).promise();
             return Promise.resolve("Object successfully deleted");
 
         }catch(error){
-            return Promise.reject(new Error("File not found Error : " + error.code));
+            return Promise.reject(new Error("File not found Error : " + error));
         }
+    
     }
 }
 
